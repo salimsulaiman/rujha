@@ -13,6 +13,7 @@
 <body class="font-urbanist">
     @include('partials.navbar')
     @yield('content')
+    @include('partials.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>

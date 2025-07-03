@@ -3,7 +3,7 @@
     class="w-full fixed z-50 transition-all duration-300 ease-in-out">
     <div class="max-w-7xl px-6 mx-auto flex justify-between md:justify-center items-center relative">
         <!-- Logo -->
-        <h1 class="text-slate-700 text-2xl font-bold block md:absolute md:left-6">rujha</h1>
+        <h1 class="text-slate-700 text-2xl font-bold block md:absolute md:left-6">Rujha</h1>
 
         <!-- Desktop Nav -->
         <ul class="hidden md:flex gap-6 items-center">
@@ -35,10 +35,10 @@
 
         <!-- Right actions -->
         <div class="hidden md:flex items-center gap-4 md:absolute md:right-0">
-            <button
+            <a href="{{ route('products.search') }}"
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="search" class="text-slate-700"></i>
-            </button>
+            </a>
             <button
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="shopping-bag" class="text-slate-700"></i>
