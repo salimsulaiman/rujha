@@ -6,34 +6,34 @@
             <h1 class="text-slate-600 font-semibold text-4xl mt-12">Account Detail</h1>
         </div>
         <div class="w-full max-w-7xl px-8 py-12 mx-auto">
-            <form action="#" method="POST" enctype="multipart/form-data" class="space-y-6">
-                @csrf
 
-                <!-- Avatar -->
-                <div class="flex flex-col sm:flex-row items-center gap-4">
-                    @php
-                        $user = auth('customer')->user();
-                        $profileUrl = $user->profile
-                            ? asset('storage/' . $user->profile)
-                            : 'https://api.dicebear.com/9.x/initials/svg?seed=' . urlencode($user->name);
-                    @endphp
-                    <img class="w-20 h-20 rounded-full object-cover" src="{{ $profileUrl }}" alt="Avatar">
-                    <div class="w-full">
-                        <label class="block mb-1 text-base font-medium text-gray-900">Change avatar</label>
-                        <input type="file" name="avatar"
-                            class="block w-full text-sm text-gray-500 px-4 file:py-1.5 file:px-4
+            <!-- Avatar -->
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+                @php
+                    $user = auth('customer')->user();
+                    $profileUrl = $user->profile
+                        ? asset('storage/' . $user->profile)
+                        : 'https://api.dicebear.com/9.x/initials/svg?seed=' . urlencode($user->name);
+                @endphp
+                <img class="w-20 h-20 rounded-full object-cover" src="{{ $profileUrl }}" alt="Avatar">
+                <div class="w-full">
+                    <label class="block mb-1 text-base font-medium text-gray-900">Change avatar</label>
+                    <input type="file" name="avatar"
+                        class="block w-full text-sm text-gray-500 px-4 file:py-1.5 file:px-4
                                 file:rounded-lg file:border-0
                                 file:text-sm file:font-semibold
                                 file:bg-slate-200 file:text-blue-700
                                 hover:file:bg-slate-300" />
-                        <p class="mt-2 text-xs text-gray-500">JPG, GIF or PNG. 1MB max.</p>
-                    </div>
+                    <p class="mt-2 text-xs text-gray-500">JPG, GIF or PNG. 1MB max.</p>
                 </div>
-
-                <!-- Content -->
-                <div class="flex flex-col md:flex-row justify-between gap-6">
-                    <!-- Left Column -->
-                    <div class="w-full md:w-1/2 space-y-4">
+            </div>
+            <!-- Content -->
+            <div class="flex flex-col md:flex-row justify-between gap-6 mt-8">
+                <!-- Left Column -->
+                <form action="{{ route('setting.update.detail') }}" method="POST" enctype="multipart/form-data"
+                    class="w-full md:w-1/2">
+                    @csrf
+                    <div class="w-full space-y-4">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-900">Fullname</label>
                             <input type="text" id="name" name="name"
@@ -58,6 +58,11 @@
                                 class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Address">{{ $user->address }}</textarea>
                         </div>
+                        @if (session('success'))
+                            <div class="p-4 mt-4 text-sm text-green-800 rounded-lg bg-green-50 font-medium" role="alert">
+                                <span class="font-semibold">Success!</span> {{ session('success') }}
+                            </div>
+                        @endif
 
                         <!-- Submit Info -->
                         <div class="pt-4">
@@ -67,9 +72,10 @@
                             </button>
                         </div>
                     </div>
-
-                    <!-- Right Column -->
-                    <div class="w-full md:w-1/2 space-y-4">
+                </form>
+                <!-- Right Column -->
+                <form action="#" method="POST" enctype="multipart/form-data" class="w-full md:w-1/2">
+                    <div class="w-full space-y-4">
                         <div>
                             <label for="oldPassword" class="block text-sm font-medium text-gray-900">Old Password</label>
                             <input type="password" id="oldPassword" name="oldPassword"
@@ -91,8 +97,9 @@
                             </button>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+
 
         </div>
     </div>

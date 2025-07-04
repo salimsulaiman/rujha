@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -13,6 +14,25 @@ class CustomerController extends Controller
     public function index()
     {
         return view('pages.account.setting');
+    }
+
+    public function updateDetail(Request $request)
+    {
+        $user = Customer::find(auth('customer')->id());
+
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'phone'   => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+        ]);
+
+        $user->name    = $validated['name'];
+        $user->phone   = $validated['phone'] ?? null;
+        $user->address = $validated['address'] ?? null;
+
+        $user->save();
+
+        return back()->with('success', 'Data profil berhasil diperbarui.');
     }
 
     /**

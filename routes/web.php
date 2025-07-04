@@ -22,3 +22,5 @@ Route::get('/search', function () {
 })->name('products.search');
 
 Route::get('/account/setting', [CustomerController::class, 'index'])->name('setting');
+Route::post('/account/update-detail', [CustomerController::class, 'updateDetail'])->name('setting.update.detail');
+Route::post('/account/update-password', [CustomerController::class, 'updatePassword'])->name('setting.update.password');
