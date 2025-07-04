@@ -3,7 +3,7 @@
     class="w-full fixed z-50 transition-all duration-300 ease-in-out">
     <div class="max-w-7xl px-6 mx-auto flex justify-between md:justify-center items-center relative">
         <!-- Logo -->
-        <h1 class="text-slate-700 text-2xl font-bold block md:absolute md:left-6">Rujha</h1>
+        <a href="{{ route('home') }}" class="text-slate-700 text-2xl font-bold block md:absolute md:left-6">rujha</a>
 
         <!-- Desktop Nav -->
         <ul class="hidden md:flex gap-6 items-center">
@@ -34,7 +34,7 @@
         </ul>
 
         <!-- Right actions -->
-        <div class="hidden md:flex items-center gap-4 md:absolute md:right-0">
+        <div class="hidden md:flex items-center gap-4 md:absolute md:right-8">
             <a href="{{ route('products.search') }}"
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="search" class="text-slate-700"></i>
@@ -43,11 +43,48 @@
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="shopping-bag" class="text-slate-700"></i>
             </button>
-            <button
-                class="rounded-full h-10 w-auto bg-white border border-slate-200 flex gap-2 items-center justify-center focus:ring-1 focus:ring-slate-300 py-[10px] px-4 cursor-pointer">
-                <i data-feather="user" class="text-slate-700"></i>
-                <h4>Login</h4>
-            </button>
+            @if (auth('customer')->check())
+                <div>
+                    @php
+                        $user = auth('customer')->user();
+                        $profileUrl = $user->profile
+                            ? asset('storage/' . $user->profile)
+                            : 'https://api.dicebear.com/9.x/initials/svg?seed=' . urlencode($user->name);
+                    @endphp
+
+                    <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
+                        data-dropdown-placement="bottom-start" class="w-10 h-10 rounded-full cursor-pointer"
+                        src="{{ $profileUrl }}" alt="User dropdown">
+
+                    <!-- Dropdown menu -->
+                    <div id="userDropdown"
+                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
+                        <div class="px-4 py-3 text-sm text-gray-900">
+                            <div>{{ auth('customer')->user()->name }}</div>
+                        </div>
+                        <ul class="py-1 text-sm text-gray-700" aria-labelledby="avatarButton">
+                            <li>
+                                <a href="{{ route('setting') }}" class="block px-4 py-2 hover:bg-gray-100">Settings</a>
+                            </li>
+                        </ul>
+                        <div class="py-1">
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                    class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 cursor-pointer">
+                                    Sign out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <a href="{{ route('login') }}"
+                    class="rounded-full h-10 w-auto bg-white border border-slate-200 flex gap-2 items-center justify-center focus:ring-1 focus:ring-slate-300 py-[10px] px-4 cursor-pointer">
+                    <i data-feather="user" class="text-slate-700"></i>
+                    <h4>Login</h4>
+                </a>
+            @endif
         </div>
 
         <!-- Mobile Hamburger -->
@@ -95,9 +132,9 @@
                 </a>
             </li>
             <li>
-                <button class="flex items-center gap-2 mt-2 text-slate-700 w-full">
+                <a href="{{ route('login') }}" class="flex items-center gap-2 mt-2 text-slate-700 w-full">
                     <i data-feather="user"></i> Login
-                </button>
+                </a>
             </li>
         </ul>
     </div>

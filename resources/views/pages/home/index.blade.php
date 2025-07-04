@@ -48,25 +48,27 @@
             </div>
 
             <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-8">
-                @for ($i = 0; $i < 3; $i++)
+                @foreach ($popularProducts as $product)
                     <div class="p-2 bg-white border border-gray-200 rounded-3xl">
                         <div class="relative aspect-[3/4] rounded-2xl bg-slate-100 overflow-hidden">
-                            <img src="{{ asset('assets/images/man.jpg') }}" alt=""
-                                class="absolute w-full h-full object-center object-cover">
+                            <img src="{{ asset('storage/' . $product->variants->first()->images->first()->image) }}"
+                                alt="" class="absolute w-full h-full object-center object-cover">
                         </div>
                         <div class="flex items-end justify-between gap-2 px-4 my-3">
                             <div class="flex flex-col gap-1">
-                                <h5 class="text-base text-slate-500 line-clamp-1">Kemeja</h5>
-                                <h4 class="text-xl text-slate-700 font-medium line-clamp-1">Kemeja Batik</h4>
-                                <h3 class="text-2xl text-slate-700 font-bold line-clamp-1">Rp. 100.000</h3>
+                                <h5 class="text-base text-slate-500 line-clamp-1">{{ $product->category->name }}</h5>
+                                <h4 class="text-xl text-slate-700 font-medium line-clamp-1">{{ $product->name }}</h4>
+                                <h3 class="text-2xl text-slate-700 font-bold line-clamp-1">
+                                    Rp {{ number_format($product->variants->first()->price_per_meter, 0, ',', '.') }}/m
+                                </h3>
                             </div>
-                            <button
+                            <a href="{{ route('product.detail', $product->slug) }}"
                                 class="rounded-full h-10 w-10 bg-white hover:bg-slate-100 border border-slate-200 flex items-center justify-center cursor-pointer focus:ring-1 focus:ring-slate-300 p-1 shrink-0">
                                 <i data-feather="arrow-up-right" class="text-slate-700"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
-                @endfor
+                @endforeach
             </div>
         </section>
         <section class="w-full max-w-7xl px-8 py-12 bg-white mx-auto">
@@ -74,25 +76,27 @@
                 <h2 class="font-medium text-3xl text-slate-700">New arrival product</h2>
             </div>
             <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
-                @for ($i = 0; $i < 8; $i++)
+                @foreach ($newProducts as $product)
                     <div class="p-2 bg-white border border-gray-200 rounded-3xl">
                         <div class="relative aspect-[3/4] rounded-2xl bg-slate-100 overflow-hidden">
-                            <img src="{{ asset('assets/images/man.jpg') }}" alt=""
-                                class="absolute w-full h-full object-center object-cover">
+                            <img src="{{ asset('storage/' . $product->variants->first()->images->first()->image) }}"
+                                alt="" class="absolute w-full h-full object-center object-cover">
                         </div>
                         <div class="flex items-end justify-between gap-2 px-4 my-3">
                             <div class="flex flex-col gap-1">
-                                <h5 class="text-base text-slate-500 line-clamp-1">Kemeja</h5>
-                                <h4 class="text-xl text-slate-700 font-medium line-clamp-1">Kemeja Batik</h4>
-                                <h3 class="text-2xl text-slate-700 font-bold line-clamp-1">Rp. 300.000</h3>
+                                <h5 class="text-base text-slate-500 line-clamp-1">{{ $product->category->name }}</h5>
+                                <h4 class="text-xl text-slate-700 font-medium line-clamp-1">{{ $product->name }}</h4>
+                                <h3 class="text-2xl text-slate-700 font-bold line-clamp-1">
+                                    Rp {{ number_format($product->variants->first()->price_per_meter, 0, ',', '.') }}/m
+                                </h3>
                             </div>
-                            <button
+                            <a href="{{ route('product.detail', $product->slug) }}"
                                 class="rounded-full h-10 w-10 bg-white hover:bg-slate-100 border border-slate-200 flex items-center justify-center cursor-pointer focus:ring-1 focus:ring-slate-300 p-1 shrink-0">
                                 <i data-feather="arrow-up-right" class="text-slate-700"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
-                @endfor
+                @endforeach
             </div>
 
         </section>
@@ -109,16 +113,6 @@
                     <p class="max-w-lg text-center">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iste molestias
                         voluptate corporis?</p>
                 </div>
-                @php
-                    $categories = [
-                        ['name' => 'Jackets', 'count' => 110, 'image' => 'jackets.jpg'],
-                        ['name' => 'Skirts', 'count' => 180, 'image' => 'skirts.jpg'],
-                        ['name' => 'Dress', 'count' => 250, 'image' => 'dress.jpg'],
-                        ['name' => 'Sweaters', 'count' => 150, 'image' => 'sweaters.jpg'],
-                        ['name' => 'Hats', 'count' => 120, 'image' => 'hats.jpg'],
-                        ['name' => 'Trousers', 'count' => 210, 'image' => 'trousers.jpg'],
-                    ];
-                @endphp
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full mt-12">
                     @foreach ($categories as $index => $category)
                         @php
@@ -131,12 +125,12 @@
                                 {{ $isWide ? 'md:col-span-2 flex-row items-center rounded-2xl overflow-hidden jusce' : 'flex-col items-center text-center' }}
                                 flex gap-4">
                             <div class="{{ $isWide ? 'w-5/7' : 'w-full' }} h-full relative rounded-lg overflow-hidden">
-                                <img src="{{ asset('assets/images/man.jpg') }}"
+                                <img src="{{ asset('storage/' . $category->image) }}"
                                     class="object-cover object-center w-full h-full" />
                             </div>
                             <div class="{{ $isRow ? 'text-center w-2/7' : '' }}">
-                                <h3 class="text-lg font-semibold text-slate-800">{{ $category['name'] }}</h3>
-                                <p class="text-slate-500 text-sm">{{ $category['count'] }}+ Products</p>
+                                <h3 class="text-lg font-semibold text-slate-800">{{ $category->name }}</h3>
+                                <p class="text-slate-500 text-sm">{{ $category->products->count() }}+ Products</p>
                             </div>
                         </div>
                     @endforeach
@@ -190,8 +184,8 @@
                     <div class="h-12 w-12 p-2 bg-white rounded-full flex items-center justify-center">
                         <i data-feather="scissors" class="text-thunder-950"></i>
                     </div>
-                    <h4 class="text-slate-700 font-bold mt-2 text-lg">Pesan Jahitan Lebih Mudah</h4>
-                    <p class="text-slate-600 font-semibold text-sm">
+                    <h4 class="text-slate-700 font-semibold mt-2 text-lg">Pesan Jahitan Lebih Mudah</h4>
+                    <p class="text-slate-600 font-medium text-sm">
                         Pilih model dan kain favoritmu, lalu pesan langsung dari rumah tanpa harus datang ke penjahit.
                     </p>
                 </div>
@@ -201,8 +195,8 @@
                     <div class="h-12 w-12 p-2 bg-white rounded-full flex items-center justify-center">
                         <i data-feather="layers" class="text-thunder-950"></i>
                     </div>
-                    <h4 class="text-slate-700 font-bold mt-2 text-lg">Pilihan Kain Lengkap</h4>
-                    <p class="text-slate-600 font-semibold text-sm">
+                    <h4 class="text-slate-700 font-semibold mt-2 text-lg">Pilihan Kain Lengkap</h4>
+                    <p class="text-slate-600 font-medium text-sm">
                         Tersedia berbagai jenis kain premium, dengan stok per meter yang dapat dicek langsung.
                     </p>
                 </div>
@@ -212,8 +206,8 @@
                     <div class="h-12 w-12 p-2 bg-white rounded-full flex items-center justify-center">
                         <i data-feather="sliders" class="text-thunder-950"></i>
                     </div>
-                    <h4 class="text-slate-700 font-bold mt-2 text-lg">Ukuran Custom Otomatis</h4>
-                    <p class="text-slate-600 font-semibold text-sm">
+                    <h4 class="text-slate-700 font-semibold mt-2 text-lg">Ukuran Custom Otomatis</h4>
+                    <p class="text-slate-600 font-medium text-sm">
                         Sistem akan menghitung kebutuhan kain otomatis sesuai model dan ukuran tubuh pelanggan.
                     </p>
                 </div>
@@ -223,8 +217,8 @@
                     <div class="h-12 w-12 p-2 bg-white rounded-full flex items-center justify-center">
                         <i data-feather="truck" class="text-thunder-950"></i>
                     </div>
-                    <h4 class="text-slate-700 font-bold mt-2 text-lg">Pengiriman Tepat Waktu</h4>
-                    <p class="text-slate-600 font-semibold text-sm">
+                    <h4 class="text-slate-700 font-semibold mt-2 text-lg">Pengiriman Tepat Waktu</h4>
+                    <p class="text-slate-600 font-medium text-sm">
                         Pantau status pengerjaan jahitan dan nikmati pengiriman ke rumah yang cepat dan aman.
                     </p>
                 </div>
@@ -311,6 +305,8 @@
                     </div>
                 </div>
             </div>
+
+
 
         </section>
     </div>

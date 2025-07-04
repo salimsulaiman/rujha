@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,7 +13,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('pages.home.index');
+        $categories = Category::get();
+        $products = Product::get();
+
+        $popularProducts = Product::withCount('orderItems') // pastikan relasi 'orderItems' ada
+            ->orderByDesc('order_items_count')
+            ->limit(3)
+            ->get();
+
+        $newProducts = Product::latest()
+            ->limit(8)
+            ->get();
+        return view('pages.home.index', compact('categories', 'products', 'popularProducts', 'newProducts'));
     }
 
     /**

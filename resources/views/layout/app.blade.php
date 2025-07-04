@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8">
@@ -10,10 +10,16 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="font-urbanist">
-    @include('partials.navbar')
+<body class="font-urbanist h-full">
+    @unless (Request::is('auth*'))
+        @include('partials.navbar')
+    @endunless
+
     @yield('content')
-    @include('partials.footer')
+
+    @unless (Request::is('auth*'))
+        @include('partials.footer')
+    @endunless
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>

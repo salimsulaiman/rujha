@@ -17,7 +17,7 @@
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-2 font-semibold text-lg">
                     <div class="w-6 h-6 rounded bg-slate-800"></div>
-                    Rujha
+                    rujha
                 </div>
                 <p class="text-sm text-slate-500">&copy; 2025 Rujha. All rights reserved.</p>
             </div>
