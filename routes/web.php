@@ -17,10 +17,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/detail/{slug}', [ProductController::class, 'show'])->name('product.detail');
 
-Route::get('/search', function () {
-    return view('pages.product.search');
-})->name('products.search');
-
 Route::get('/account/setting', [CustomerController::class, 'index'])->name('setting');
 Route::post('/account/update-detail', [CustomerController::class, 'updateDetail'])->name('setting.update.detail');
 Route::post('/account/update-password', [CustomerController::class, 'updatePassword'])->name('setting.update.password');
+Route::post('/account/update-profile', [CustomerController::class, 'updateProfile'])->name('setting.update.profile');
+Route::post('/account/delete-profile', [CustomerController::class, 'deleteProfile'])->name('setting.delete.profile');

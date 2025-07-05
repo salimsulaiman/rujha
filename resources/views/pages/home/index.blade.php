@@ -231,7 +231,7 @@
                 <!-- FAQ 1 -->
                 <h2 id="accordion-open-heading-1">
                     <button type="button"
-                        class="flex items-center justify-between w-full p-5 font-medium text-gray-700 border border-b-0 border-gray-200 rounded-t-xl hover:bg-gray-100 gap-3"
+                        class="flex items-center justify-between w-full p-5 font-medium text-gray-700 border border-b-0 border-gray-200 rounded-t-xl hover:bg-gray-100 gap-3 aria-expanded:bg-slate-800"
                         data-accordion-target="#accordion-open-body-1" aria-expanded="true"
                         aria-controls="accordion-open-body-1">
                         <span class="flex items-center gap-2">
@@ -257,7 +257,7 @@
                 <!-- FAQ 2 -->
                 <h2 id="accordion-open-heading-2">
                     <button type="button"
-                        class="flex items-center justify-between w-full p-5 font-medium text-gray-700 border border-b-0 border-gray-200 hover:bg-gray-100 gap-3"
+                        class="flex items-center justify-between w-full p-5 font-medium text-gray-700 border border-b-0 border-gray-200 hover:bg-gray-100 gap-3 aria-expanded:bg-slate-800"
                         data-accordion-target="#accordion-open-body-2" aria-expanded="false"
                         aria-controls="accordion-open-body-2">
                         <span class="flex items-center gap-2">
@@ -282,7 +282,7 @@
                 <!-- FAQ 3 -->
                 <h2 id="accordion-open-heading-3">
                     <button type="button"
-                        class="flex items-center justify-between w-full p-5 font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 gap-3"
+                        class="flex items-center justify-between w-full p-5 font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 gap-3 aria-expanded:bg-slate-800"
                         data-accordion-target="#accordion-open-body-3" aria-expanded="false"
                         aria-controls="accordion-open-body-3">
                         <span class="flex items-center gap-2">

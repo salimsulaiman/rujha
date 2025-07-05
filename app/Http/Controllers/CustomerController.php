@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -35,6 +36,59 @@ class CustomerController extends Controller
         return back()->with('success', 'Data profil berhasil diperbarui.');
     }
 
+    public function updatePassword(Request $request)
+    {
+
+        $user = Customer::find(auth('customer')->id());
+
+        $request->validate([
+            'oldPassword' => 'required|string',
+            'password' => 'required|string|min:6|confirmed', // gunakan `confirmed` jika pakai konfirmasi password
+        ]);
+
+        if (!Hash::check($request->oldPassword, $user->password)) {
+            return back()->withErrors(['oldPassword' => 'Password lama tidak sesuai.'])->withInput();
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password berhasil diperbarui.');
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Customer::find(auth('customer')->id());
+
+        $request->validate([
+            'profile' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:1024',
+        ]);
+
+        if ($user->profile && Storage::disk('public')->exists($user->profile)) {
+            Storage::disk('public')->delete($user->profile);
+        }
+
+        $path = $request->file('profile')->store('profile', 'public');
+
+        $user->profile = $path;
+        $user->save();
+
+        return back()->with('success', 'Foto profil berhasil diperbarui.');
+    }
+
+    public function deleteProfile()
+    {
+        $user = Customer::find(auth('customer')->id());
+
+        if ($user->profile && Storage::disk('public')->exists($user->profile)) {
+            Storage::disk('public')->delete($user->profile);
+        }
+
+        $user->profile = null;
+        $user->save();
+
+        return back()->with('success', 'Avatar berhasil dihapus.');
+    }
     /**
      * Show the form for creating a new resource.
      */

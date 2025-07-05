@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -10,21 +11,45 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->paginate(8);
+        $search = $request->input('search');
+        $categorySlug = $request->input('category');
+        $sort = $request->input('sort', 'newest');
 
-        $popularProducts = Product::withCount('orderItems') // pastikan relasi 'orderItems' ada
+        $products = Product::with('category')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->when($categorySlug, function ($query) use ($categorySlug) {
+                $query->whereHas('category', function ($q) use ($categorySlug) {
+                    $q->where('slug', $categorySlug);
+                });
+            })
+            ->when($sort === 'popular', function ($query) {
+                $query->withCount('orderItems')->orderByDesc('order_items_count');
+            }, function ($query) {
+                $query->latest(); // default: terbaru
+            })
+            ->paginate(8)
+            ->withQueryString();
+
+        $popularProducts = Product::with('category')
+            ->withCount('orderItems')
             ->orderByDesc('order_items_count')
             ->limit(4)
             ->get();
 
-        return view('pages.product.products', compact('products', 'popularProducts'));
+        $categories = Category::get();
+
+        return view('pages.product.products', compact('products', 'popularProducts', 'search', 'categories', 'categorySlug', 'sort'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
         //

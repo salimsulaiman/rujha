@@ -1,6 +1,6 @@
 <nav x-data="{ scrolled: false, open: false }" x-init="scrolled = window.scrollY > 10" @scroll.window="scrolled = window.scrollY > 10"
     :class="scrolled ? 'bg-white shadow-none md:shadow py-5 ' : 'bg-white md:bg-transparent py-5 md:py-8 '"
-    class="w-full fixed z-50 transition-all duration-300 ease-in-out">
+    class="w-full fixed z-40 transition-all duration-300 ease-in-out">
     <div class="max-w-7xl px-6 mx-auto flex justify-between md:justify-center items-center relative">
         <!-- Logo -->
         <a href="{{ route('home') }}" class="text-slate-700 text-2xl font-bold block md:absolute md:left-6">rujha</a>
@@ -35,10 +35,10 @@
 
         <!-- Right actions -->
         <div class="hidden md:flex items-center gap-4 md:absolute md:right-8">
-            <a href="{{ route('products.search') }}"
+            <button data-modal-target="modal-search" data-modal-toggle="modal-search"
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="search" class="text-slate-700"></i>
-            </a>
+            </button>
             <button
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="shopping-bag" class="text-slate-700"></i>
@@ -52,9 +52,12 @@
                             : 'https://api.dicebear.com/9.x/initials/svg?seed=' . urlencode($user->name);
                     @endphp
 
-                    <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
-                        data-dropdown-placement="bottom-start" class="w-10 h-10 rounded-full cursor-pointer"
-                        src="{{ $profileUrl }}" alt="User dropdown">
+                    <div class="w-10 h-10 relative rounded-full overflow-hidden">
+                        <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
+                            data-dropdown-placement="bottom-start"
+                            class="absolute h-full w-full object-cover object-center cursor-pointer"
+                            src="{{ $profileUrl }}" alt="User dropdown">
+                    </div>
 
                     <!-- Dropdown menu -->
                     <div id="userDropdown"
@@ -139,3 +142,45 @@
         </ul>
     </div>
 </nav>
+
+<div id="modal-search" x-data x-init="const observer = new MutationObserver(() => {
+    if ($el.classList.contains('flex')) {
+        $nextTick(() => $refs.inputSearch.focus())
+    }
+});
+observer.observe($el, { attributes: true, attributeFilter: ['class'] });" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-full overflow-hidden shadow-sm p-2">
+
+            <form class="flex items-center mx-auto" action="{{ route('products') }}" method="GET">
+                <label for="simple-search" class="sr-only">Search</label>
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 18 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
+                        </svg>
+                    </div>
+                    <input type="search" x-ref="inputSearch" id="simple-search" name="search" autofocus
+                        class="bg-white text-gray-900 text-sm rounded-full focus:ring-0 border-0 block w-full ps-10 p-2.5"
+                        placeholder="Search product name..." />
+                </div>
+                <button type="submit"
+                    class="p-2.5 ms-2 text-sm font-medium text-white bg-slate-700 rounded-full border border-slate-700 hover:bg-slate-800 focus:ring-4 focus:outline-none focus:ring-slate-300">
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                    <span class="sr-only">Search</span>
+                </button>
+            </form>
+
+
+        </div>
+    </div>
+</div>
