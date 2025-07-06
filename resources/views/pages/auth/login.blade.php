@@ -9,6 +9,9 @@
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form class="space-y-6" action="{{ route('login') }}" method="POST">
                 @csrf
+                @if (request('redirect_to'))
+                    <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
+                @endif
                 <div>
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
                     <input type="text" id="email" name="email"

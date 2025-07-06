@@ -27,7 +27,10 @@ class AuthController extends Controller
 
         if (Auth::guard('customer')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('home');
+
+            $redirectTo = $request->input('redirect_to') ?? route('home');
+
+            return redirect()->to($redirectTo);
         }
 
         return back()->withErrors([

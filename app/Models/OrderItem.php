@@ -13,6 +13,7 @@ class OrderItem extends Model
         'variant_id',
         'size_id',
         'custom_size_note',
+        'quantity',
         'request_meter',
         'subtotal_price',
         'notes'

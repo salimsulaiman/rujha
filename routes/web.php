@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -17,8 +19,16 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/detail/{slug}', [ProductController::class, 'show'])->name('product.detail');
 
-Route::get('/account/setting', [CustomerController::class, 'index'])->name('setting');
-Route::post('/account/update-detail', [CustomerController::class, 'updateDetail'])->name('setting.update.detail');
-Route::post('/account/update-password', [CustomerController::class, 'updatePassword'])->name('setting.update.password');
-Route::post('/account/update-profile', [CustomerController::class, 'updateProfile'])->name('setting.update.profile');
-Route::post('/account/delete-profile', [CustomerController::class, 'deleteProfile'])->name('setting.delete.profile');
+Route::middleware('auth.customer')->group(function () {
+    Route::get('/account/setting', [CustomerController::class, 'index'])->name('setting');
+    Route::post('/account/update-detail', [CustomerController::class, 'updateDetail'])->name('setting.update.detail');
+    Route::post('/account/update-password', [CustomerController::class, 'updatePassword'])->name('setting.update.password');
+    Route::post('/account/update-profile', [CustomerController::class, 'updateProfile'])->name('setting.update.profile');
+    Route::post('/account/delete-profile', [CustomerController::class, 'deleteProfile'])->name('setting.delete.profile');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::delete('/cart/items/{id}', [CartController::class, 'destroy'])->name('cart.item.destroy');
+
+    Route::patch('/cart-items/{id}/quantity', [CartItemController::class, 'updateQuantity'])->name('cart-items.updateQuantity');
+});

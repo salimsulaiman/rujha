@@ -1,6 +1,6 @@
 @extends('layout.app')
 @section('content')
-    <div class="w-full">
+    <div class="w-full relative">
         <div class="w-full h-[300px] bg-cover bg-center flex flex-col items-center justify-center"
             style="background-image: url('/assets/images/batik-bg.jpg');">
             <h1 class="text-slate-600 font-semibold text-4xl mt-12">Product Detail</h1>
@@ -27,9 +27,38 @@
                 hip: null,
                 body_length: null,
                 sleeve_length: null
-            }
+            },
+            quantity: 1,
+            get customSizeNote() {
+                if (this.selectedSize !== 'custom') return '';
+        
+                const c = this.customSize;
+                return `Dada: ${c.chest ?? 0}cm, Pinggang: ${c.waist ?? 0}cm, Pinggul: ${c.hip ?? 0}cm, Panjang Badan: ${c.body_length ?? 0}cm, Panjang Lengan: ${c.sleeve_length ?? 0}cm`;
+            },
+        
+            autoSelectSize() {
+                if (this.selectedSize) return;
+                const variant = this.selectedVariant;
+                if (!variant) return;
+                const firstAvailable = variant.sizes.find(size =>
+                    size.estimated_meter <= variant.stock_in_meter
+                );
+                this.selectedSize = firstAvailable ? firstAvailable.id : '';
+            },
+        
+            customSizeNote: '',
         }"
-            x-init="updateActiveImageById(selectedVariantId)">
+            x-init="updateActiveImageById(selectedVariantId);
+            autoSelectSize();"
+            x-effect="
+            updateActiveImageById(selectedVariantId);
+            autoSelectSize();
+            $watch('selectedVariantId', value => {
+                updateActiveImageById(value);
+                selectedSize = '';
+                autoSelectSize();
+            });
+        ">
             <div class="flex flex-col gap-4">
                 @php
                     $variant = $product->variants->first();
@@ -69,7 +98,7 @@
                         </h2>
                         <div id="accordion-flush-body-1" class="hidden" aria-labelledby="accordion-flush-heading-1">
                             <div class="py-5 border-b border-gray-200">
-                                <p class="mb-2 text-gray-500">{{ $product->description }}</p>
+                                <div class="prose w-full">{!! $product->description !!}</div>
                             </div>
                         </div>
 
@@ -121,7 +150,7 @@
                     <h4 class="text-base font-semibold text-gray-700 mb-1">Quantity</h4>
                     <div class="relative flex items-center max-w-[8rem]">
                         <!-- Minus Button -->
-                        <button type="button" id="decrement-button" data-input-counter-decrement="quantity-input"
+                        <button type="button" @click="if(quantity > 1) quantity--"
                             class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:outline-none">
                             <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 18 2">
@@ -131,13 +160,12 @@
                         </button>
 
                         <!-- Input -->
-                        <input type="text" id="quantity-input" data-input-counter
-                            aria-describedby="helper-text-explanation"
-                            class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm block w-full py-2.5 focus:outline-none"
-                            placeholder="0" required value="1" />
+                        <input type="number" min="1" name="quantity" x-model="quantity"
+                            @input="if (quantity < 1) quantity = 1"
+                            class="appearance-none bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm block w-full py-2.5 focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] focus:ring-0" />
 
                         <!-- Plus Button -->
-                        <button type="button" id="increment-button" data-input-counter-increment="quantity-input"
+                        <button type="button" @click="quantity++"
                             class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:outline-none">
                             <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 18 18">
@@ -146,6 +174,7 @@
                             </svg>
                         </button>
                     </div>
+
                 </div>
                 <div class="mt-6 space-y-8">
                     <div>
@@ -249,16 +278,87 @@
 
 
                     </div>
-                    <div class="mt-8 flex gap-2">
+                    <div class="mt-8 flex gap-2 flex-col md:flex-row">
+                        @auth('customer')
+                            <form action="{{ route('cart.store') }}" method="POST" class="flex-1">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="variant_id" :value="selectedVariantId">
+                                <input type="hidden" name="size_id"
+                                    :value="selectedSize === 'custom' ? '' : selectedSize">
+                                <input type="hidden" name="requested_meter"
+                                    :value="selectedVariant?.sizes.find(s => s.id === selectedSize)?.estimated_meter ?? 1">
+                                <input type="hidden" name="quantity" :value="quantity">
+                                <input type="hidden" name="custom_size_note" :value="customSizeNote">
+                                <input type="hidden" name="chest" :value="customSize.chest">
+                                <input type="hidden" name="waist" :value="customSize.waist">
+                                <input type="hidden" name="hip" :value="customSize.hip">
+                                <input type="hidden" name="body_length" :value="customSize.body_length">
+                                <input type="hidden" name="sleeve_length" :value="customSize.sleeve_length">
+                                <button type="submit"
+                                    class="w-full bg-white text-slate-800 px-4 py-2 rounded-full hover:bg-slate-800 cursor-pointer hover:text-white border-slate-800 border">
+                                    Add to cart
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}?redirect_to={{ urlencode(request()->fullUrl()) }}"
+                                class="flex-1 bg-white text-slate-800 px-4 py-2 rounded-full w-fit hover:bg-slate-800 cursor-pointer hover:text-white border-slate-800 border text-center">
+                                Add to cart
+                            </a>
+                        @endauth
                         <button
-                            class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-full w-fit hover:bg-blue-700 cursor-pointer">
-                            Add to cart
+                            class="flex-1 bg-slate-700 text-white px-4 py-2 rounded-full w-full hover:bg-slate-800 cursor-pointer">
+                            Checkout
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
+        @if (session('success'))
+            <div x-data="{ showToast: true }" x-show="showToast" id="toast-interactive"
+                class="w-full max-w-xs p-4 text-gray-700 bg-slate-50 rounded-lg shadow-sm fixed right-8 bottom-8"
+                role="alert" x-transition>
+                <div class="flex gap-1">
+                    <div
+                        class="inline-flex items-center justify-center w-8 h-8 text-slate-600 bg-slate-200 rounded-lg shrink-0">
+                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 18 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97" />
+                        </svg>
+                        <span class="sr-only">Refresh icon</span>
+                    </div>
+                    <div class="ms-3 text-sm font-normal">
+                        <span class="mb-1 text-sm font-semibold text-gray-900">Keranjang diupdate</span>
+                        <div class="mb-2 text-sm font-normal">{{ session('success') }}</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <a href="{{ route('cart') }}"
+                                    class="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-white bg-slate-700 rounded-lg hover:bg-slate-800 focus:ring-2 focus:ring-slate-300">
+                                    Keranjang
+                                </a>
+                            </div>
+                            <div>
+                                <button @click="showToast = false"
+                                    class="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-2 focus:ring-gray-200">
+                                    Tutup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button @click="showToast = false"
+                        class="ms-auto text-gray-400 hover:text-gray-900 rounded-lg p-1 h-8 w-8 shrink-0 flex items-center justify-center"
+                        aria-label="Close">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        @endif
 
     </div>
 @endsection

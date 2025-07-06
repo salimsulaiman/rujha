@@ -11,18 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_items', function (Blueprint $table) {
+        Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained()->onDelete('cascade');
+            $table->foreignId('cart_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('variant_id')->constrained('product_variants')->onDelete('cascade');
             $table->foreignId('size_id')->nullable()->constrained('product_sizes')->onDelete('set null');
+
+            $table->unsignedInteger('quantity')->default(1); // jumlah unit
+            $table->decimal('requested_meter', 5, 2)->default(1); // meter per unit
+
+            $table->string('custom_size_hash', 64)->nullable(); // hash dari custom_size_note
             $table->text('custom_size_note')->nullable();
-            $table->unsignedInteger('quantity')->default(1);
-            $table->decimal('requested_meter', 5, 2);
-            $table->decimal('subtotal_price', 10, 2);
             $table->text('notes')->nullable();
+
             $table->timestamps();
+
+            // Pastikan item unik berdasarkan kombinasi ini
+            $table->unique(['cart_id', 'variant_id', 'size_id', 'custom_size_hash'], 'unique_cart_items');
         });
     }
 
@@ -31,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('cart_items');
     }
 };

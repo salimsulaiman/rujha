@@ -8,6 +8,7 @@ use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
@@ -53,9 +54,18 @@ class ProductResource extends Resource
                                     ->required()
                                     ->unique(ignoreRecord: true),
 
-                                Textarea::make('description')
-                                    ->maxLength(1000)
-                                    ->rows(4),
+                                RichEditor::make('description')
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'bulletList',
+                                        'italic',
+                                        'link',
+                                        'orderedList',
+                                        'redo',
+                                        'strike',
+                                        'underline',
+                                        'undo',
+                                    ]),
                                 Toggle::make('is_customable')->required()
                             ]),
 

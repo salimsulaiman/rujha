@@ -39,10 +39,10 @@
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="search" class="text-slate-700"></i>
             </button>
-            <button
+            <a href="{{ route('cart') }}"
                 class="rounded-full h-10 w-10 bg-white border border-slate-200 flex items-center justify-center focus:ring-1 focus:ring-slate-300 p-[10px] cursor-pointer">
                 <i data-feather="shopping-bag" class="text-slate-700"></i>
-            </button>
+            </a>
             @if (auth('customer')->check())
                 <div>
                     @php
