@@ -120,8 +120,8 @@
                             $isRow = $isWide;
                         @endphp
 
-                        <div
-                            class="bg-white rounded-xl overflow-hidden shadow-sm p-3
+                        <a href="{{ route('products', ['category' => $category->slug]) }}"
+                            class="bg-white rounded-xl overflow-hidden shadow-sm p-3 block
                                 {{ $isWide ? 'md:col-span-2 flex-row items-center rounded-2xl overflow-hidden jusce' : 'flex-col items-center text-center' }}
                                 flex gap-4">
                             <div class="{{ $isWide ? 'w-5/7' : 'w-full' }} h-full relative rounded-lg overflow-hidden">
@@ -132,7 +132,7 @@
                                 <h3 class="text-lg font-semibold text-slate-800">{{ $category->name }}</h3>
                                 <p class="text-slate-500 text-sm">{{ $category->products->count() }}+ Products</p>
                             </div>
-                        </div>
+                        </a>
                     @endforeach
                 </div>
                 <div class="w-full flex items-center justify-center mt-8">

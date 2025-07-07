@@ -41,7 +41,7 @@
                 const variant = this.selectedVariant;
                 if (!variant) return;
                 const firstAvailable = variant.sizes.find(size =>
-                    size.estimated_meter <= variant.stock_in_meter
+                    Number(size.estimated_meter) <= Number(variant.stock_in_meter)
                 );
                 this.selectedSize = firstAvailable ? firstAvailable.id : '';
             },
@@ -206,10 +206,10 @@
                         <div class="flex gap-2">
                             <template x-for="size in selectedVariant?.sizes" :key="size.id">
                                 <span
-                                    @click="size.estimated_meter <= selectedVariant.stock_in_meter ? (selectedSize = size.id, showCustomSizeForm = false) : null"
+                                    @click="Number(size.estimated_meter) <= Number(selectedVariant.stock_in_meter) ? (selectedSize = size.id, showCustomSizeForm = false) : null"
                                     x-text="size.size_label"
                                     :class="[
-                                        size.estimated_meter > selectedVariant.stock_in_meter ?
+                                        Number(size.estimated_meter) > Number(selectedVariant.stock_in_meter) ?
                                         'bg-gray-200 text-gray-400 cursor-not-allowed' :
                                         (selectedSize === size.id ?
                                             'bg-slate-700 text-white' :
@@ -306,10 +306,6 @@
                                 Add to cart
                             </a>
                         @endauth
-                        <button
-                            class="flex-1 bg-slate-700 text-white px-4 py-2 rounded-full w-full hover:bg-slate-800 cursor-pointer">
-                            Checkout
-                        </button>
                     </div>
                 </div>
             </div>

@@ -20,7 +20,7 @@
                 </a>
             </li>
             <li>
-                <a href="/"
+                <a href="{{ route('training') }}"
                     class="{{ request()->routeIs('training') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
                     Training
                 </a>
