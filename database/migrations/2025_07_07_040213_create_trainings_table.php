@@ -17,12 +17,13 @@ return new class extends Migration
             $table->string('slug')->required();
             $table->text('description')->required();
             $table->string('location')->required();
-            $table->timestamp('start_date')->required();
-            $table->timestamp('end_date')->required();
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
             $table->string('thumbnail')->required(); // path ke gambar
             $table->text('excerpt')->required(); // deskripsi singkat
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
             $table->integer('price')->required();
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

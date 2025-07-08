@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\TailoringProgress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -29,6 +33,69 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    public function placeOrder(Request $request)
+    {
+        $customer = auth('customer')->user();
+        $request->validate([
+            'subtotal_amount' => 'required|numeric|min:0',
+            'tax' => 'required|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
+        ]);
+
+        $cart = Cart::with('items.variant', 'items.size')
+            ->where('customer_id', $customer->id)
+            ->firstOrFail();
+
+
+        if ($cart->items->isEmpty()) {
+            return back()->with('error', 'Keranjang kosong.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $order = Order::create([
+                'customer_id' => $customer->id,
+                'code' => 'ORD-' . strtoupper(uniqid()),
+                'subtotal_amount' => $request->subtotal_amount,
+                'tax' => $request->tax,
+                'total_amount' => $request->total_amount,
+                'status' => 'pending',
+            ]);
+
+            foreach ($cart->items as $item) {
+                $subtotal = $item->quantity * $item->requested_meter * $item->variant->price_per_meter;
+
+                $orderItem = OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'variant_id' => $item->variant_id,
+                    'size_id' => $item->size_id,
+                    'custom_size_note' => $item->custom_size_note,
+                    'quantity' => $item->quantity,
+                    'requested_meter' => $item->requested_meter,
+                    'subtotal_price' => $subtotal,
+                    'notes' => $item->notes,
+                ]);
+
+                TailoringProgress::create([
+                    'order_item_id' => $orderItem->id,
+                    'status' => 'waiting',
+                ]);
+            }
+
+            $cart->items()->delete();
+            $cart->delete();
+
+            DB::commit();
+
+            return redirect()->route('orders.show', $order)->with('success', 'Pesanan berhasil dibuat.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**

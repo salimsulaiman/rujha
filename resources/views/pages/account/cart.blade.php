@@ -113,7 +113,7 @@
                                                 <div class="text-end md:order-4 md:w-32 flex flex-col gap-1">
                                                     <p class="text-xs font-normal text-gray-600">
                                                         <span x-text="formatRupiah(pricePerMeter)"></span> * <span
-                                                            x-text="requestedMeter*quantity"></span>m
+                                                            x-text="(requestedMeter * quantity).toFixed(2)"></span>m
                                                     </p>
                                                     <p class="text-base font-bold text-gray-900">
                                                         <span x-text="formatRupiah(totalPrice)"></span>
@@ -181,10 +181,23 @@
                                         <dd x-text="$store.cart.formatRupiah($store.cart.total)"></dd>
                                     </dl>
                                 </div>
+                                @if (session('error'))
+                                    <div class="text-red-600 font-medium">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
 
-                                <a href="#"
-                                    class="flex w-full items-center justify-center rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-primary-300">Proceed
-                                    to Checkout</a>
+                                {{-- <form action="{{ route('checkout') }}" method="POST" x-data>
+                                    @csrf
+                                    <input type="hidden" name="subtotal_amount" id=""
+                                        :value="$store.cart.originalPrice">
+                                    <input type="hidden" name="tax" id="" :value="$store.cart.tax">
+                                    <input type="hidden" name="total_amount" id="" :value="$store.cart.total"> --}}
+                                <button type="button"
+                                    class="flex w-full items-center justify-center rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
+                                    Proceed
+                                    to Checkout</button>
+                                {{-- </form> --}}
 
                                 <div class="flex items-center justify-center gap-2">
                                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
@@ -239,17 +252,20 @@
             </div>
         @endif
         @php
-            $cartSummaryItems = $cart->items
-                ->map(function ($i) {
-                    return [
-                        'id' => $i->id,
-                        'quantity' => $i->quantity,
-                        'requestedMeter' => $i->requested_meter,
-                        'pricePerMeter' => $i->variant->price_per_meter,
-                    ];
-                })
-                ->values()
-                ->toArray();
+            $cartSummaryItems = [];
+            if ($cart && $cart->items) {
+                $cartSummaryItems = $cart->items
+                    ->map(function ($i) {
+                        return [
+                            'id' => $i->id,
+                            'quantity' => $i->quantity,
+                            'requestedMeter' => $i->requested_meter,
+                            'pricePerMeter' => $i->variant->price_per_meter,
+                        ];
+                    })
+                    ->values()
+                    ->toArray();
+            }
         @endphp
         <script>
             function cartSummary() {

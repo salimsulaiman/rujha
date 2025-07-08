@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->string('code')->unique();
+            $table->decimal('subtotal_amount', 12, 2);
+            $table->decimal('tax', 12, 2);
             $table->decimal('total_amount', 12, 2);
             $table->enum('status', ['pending', 'paid', 'canceled', 'failed'])->default('pending');
             $table->string('payment_method')->nullable();

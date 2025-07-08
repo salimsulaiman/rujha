@@ -16,11 +16,13 @@ class Training extends Model
         'thumbnail',
         'excerpt',
         'status',
+        'is_active',
         'price'
     ];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'is_active' => 'boolean',
     ];
 }

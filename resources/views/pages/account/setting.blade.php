@@ -1,18 +1,12 @@
-@extends('layout.app')
+@extends('layout.account.app')
 @section('content')
     <div class="w-full">
-        <div class="w-full h-[300px] bg-cover bg-center flex flex-col items-center justify-center"
-            style="background-image: url('/assets/images/batik-bg.jpg');">
-            <h1 class="text-slate-600 font-semibold text-4xl mt-12">Account Detail</h1>
-        </div>
-        @if (session('success'))
-            <div class="w-full max-w-7xl px-8 pt-8 mx-auto">
-                <div class="p-4 mt-4 text-sm text-green-800 rounded-lg bg-green-50 font-medium" role="alert">
+        <div class="w-full max-w-7xl px-2 lg:px-8 py-8 mx-auto">
+            @if (session('success'))
+                <div class="p-4 mb-8 text-sm text-green-800 rounded-lg bg-green-50 font-medium" role="alert">
                     <span class="font-semibold">Success!</span> {{ session('success') }}
                 </div>
-            </div>
-        @endif
-        <div class="w-full max-w-7xl px-8 py-12 mx-auto">
+            @endif
             <!-- Avatar -->
             <div class="flex flex-col sm:flex-row items-center gap-4">
                 @php
@@ -100,8 +94,8 @@
                                                                 <path stroke="currentColor" stroke-linecap="round"
                                                                     stroke-linejoin="round" stroke-width="2"
                                                                     d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5
-                                                                                                                                                                                                                                           5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4
-                                                                                                                                                                                                                                           4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                                                                                                                                                                                                                                                       5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4
+                                                                                                                                                                                                                                                                                       4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                                             </svg>
                                                             <p class="mb-2 text-sm text-gray-500"><span
                                                                     class="font-semibold">Click to upload</span> or drag and
@@ -165,7 +159,7 @@
                             <label for="phone" class="block text-sm font-medium text-gray-900">Phone</label>
                             <input type="text" id="phone" name="phone"
                                 class="mt-1 block w-full rounded-md border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                                required value="{{ $user->phone }}">
+                                value="{{ $user->phone }}">
                         </div>
                         <div>
                             <label for="address" class="block text-sm font-medium text-gray-900">Address</label>

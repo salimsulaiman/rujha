@@ -12,6 +12,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -65,19 +66,29 @@ class TrainingResource extends Resource
                     ->columnSpan(2)
                     ->maxLength(255),
 
+                Toggle::make('is_active')
+                    ->label('Aktifkan Jadwal?')
+                    ->default(false)
+                    ->columnSpan(2)
+                    ->reactive(),
+
                 DateTimePicker::make('start_date')
                     ->label('Tanggal Mulai')
-                    ->required(),
+                    ->required(fn(callable $get) => $get('is_active'))
+                    ->visible(fn(callable $get) => $get('is_active')),
 
                 DateTimePicker::make('end_date')
                     ->label('Tanggal Selesai')
-                    ->required(),
+                    ->required(fn(callable $get) => $get('is_active'))
+                    ->visible(fn(callable $get) => $get('is_active')),
+
 
                 FileUpload::make('thumbnail')
                     ->label('Thumbnail')
                     ->image()
                     ->required()
                     ->directory('trainings')
+                    ->columnSpan(2)
                     ->imagePreviewHeight('150'),
 
                 TextInput::make('price')->label('Harga')->numeric()->required(),

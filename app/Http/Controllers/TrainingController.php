@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Training;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TrainingController extends Controller
@@ -11,12 +13,19 @@ class TrainingController extends Controller
      */
     public function index()
     {
-        return view('pages.training.training');
+        $trainings = Training::paginate(8);
+        return view('pages.training.training', compact('trainings'));
     }
 
-    public function detail()
+    public function detail($slug)
     {
-        return view('pages.training.detail');
+        $training = Training::where('slug', $slug)->firstOrFail();
+        $startFormatted = Carbon::parse($training->start_date)
+            ->locale('id')->translatedFormat('d F Y, H.i') . ' WIB';
+
+        $endFormatted = Carbon::parse($training->end_date)
+            ->locale('id')->translatedFormat('d F Y, H.i') . ' WIB';
+        return view('pages.training.detail', compact('training', 'startFormatted', 'endFormatted'));
     }
 
     /**

@@ -67,7 +67,7 @@
                         </div>
                         <ul class="py-1 text-sm text-gray-700" aria-labelledby="avatarButton">
                             <li>
-                                <a href="{{ route('setting') }}" class="block px-4 py-2 hover:bg-gray-100">Settings</a>
+                                <a href="{{ route('setting') }}" class="block px-4 py-2 hover:bg-gray-100">Account</a>
                             </li>
                         </ul>
                         <div class="py-1">

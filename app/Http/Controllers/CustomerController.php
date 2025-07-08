@@ -17,6 +17,11 @@ class CustomerController extends Controller
         return view('pages.account.setting');
     }
 
+    public function transaction()
+    {
+        return view('pages.account.transaction');
+    }
+
     public function updateDetail(Request $request)
     {
         $user = Customer::find(auth('customer')->id());
