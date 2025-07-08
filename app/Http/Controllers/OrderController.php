@@ -14,9 +14,13 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function transaction()
     {
-        //
+        $customer = auth('customer')->user();
+        $orders = Order::with('items')->where('customer_id', $customer->id)->get();
+
+        return view('pages.account.transaction', compact('orders'));
+
     }
 
     /**
@@ -91,7 +95,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('orders.show', $order)->with('success', 'Pesanan berhasil dibuat.');
+            return redirect()->route('cart', $order)->with('successOrder', 'Pesanan berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

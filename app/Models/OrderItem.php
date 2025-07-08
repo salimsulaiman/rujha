@@ -14,7 +14,7 @@ class OrderItem extends Model
         'size_id',
         'custom_size_note',
         'quantity',
-        'request_meter',
+        'requested_meter',
         'subtotal_price',
         'notes'
     ];

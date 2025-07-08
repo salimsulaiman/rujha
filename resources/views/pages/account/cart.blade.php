@@ -187,17 +187,17 @@
                                     </div>
                                 @endif
 
-                                {{-- <form action="{{ route('checkout') }}" method="POST" x-data>
+                                <form action="{{ route('checkout') }}" method="POST" x-data>
                                     @csrf
                                     <input type="hidden" name="subtotal_amount" id=""
                                         :value="$store.cart.originalPrice">
                                     <input type="hidden" name="tax" id="" :value="$store.cart.tax">
-                                    <input type="hidden" name="total_amount" id="" :value="$store.cart.total"> --}}
-                                <button type="button"
-                                    class="flex w-full items-center justify-center rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
-                                    Proceed
-                                    to Checkout</button>
-                                {{-- </form> --}}
+                                    <input type="hidden" name="total_amount" id="" :value="$store.cart.total">
+                                    <button type="submit"
+                                        class="flex w-full items-center justify-center rounded-lg bg-slate-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
+                                        Proceed
+                                        to Checkout</button>
+                                </form>
 
                                 <div class="flex items-center justify-center gap-2">
                                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
@@ -238,6 +238,47 @@
                     <div class="ms-3 text-sm font-normal">
                         <span class="mb-1 text-sm font-semibold text-gray-900">Item dihapus</span>
                         <div class="mb-2 text-sm font-normal">{{ session('success') }}</div>
+                    </div>
+                    <button @click="showToast = false"
+                        class="ms-auto text-gray-400 hover:text-gray-900 rounded-lg p-1 h-8 w-8 shrink-0 flex items-center justify-center"
+                        aria-label="Close">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        @endif
+        @if (session('successOrder'))
+            <div x-data="{ showToast: true }" x-show="showToast" id="toast-interactive"
+                class="w-full max-w-xs p-4 text-gray-700 bg-green-50 rounded-lg shadow-sm fixed right-8 bottom-8"
+                role="alert" x-transition>
+                <div class="flex gap-1">
+                    <div
+                        class="inline-flex items-center justify-center w-8 h-8 text-green-600 bg-green-100 rounded-lg shrink-0 p-2">
+                        <i data-feather="dollar-sign"></i>
+
+                        <span class="sr-only">Refresh icon</span>
+                    </div>
+                    <div class="ms-3 text-sm font-normal">
+                        <span class="mb-1 text-sm font-semibold text-gray-900">Success</span>
+                        <div class="mb-2 text-sm font-normal">{{ session('successOrder') }}</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <a href="{{ route('transaction') }}"
+                                    class="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-white bg-slate-700 rounded-lg hover:bg-slate-800 focus:ring-2 focus:ring-slate-300">
+                                    Detail
+                                </a>
+                            </div>
+                            <div>
+                                <button @click="showToast = false"
+                                    class="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-2 focus:ring-gray-200">
+                                    Tutup
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <button @click="showToast = false"
                         class="ms-auto text-gray-400 hover:text-gray-900 rounded-lg p-1 h-8 w-8 shrink-0 flex items-center justify-center"
