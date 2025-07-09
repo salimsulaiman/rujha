@@ -25,6 +25,11 @@
                                 Payment Method
                             </span>
                         </th>
+                        <th>
+                            <span class="flex items-center">
+                                Action
+                            </span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +42,9 @@
                             </td>
                             <td><span
                                     class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-3 py-1 rounded-full">BCA</span>
+                            </td>
+                            <td><a href="{{ route('transaction.detail', $order->code) }}"
+                                    class="px-4 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full">Detail</a>
                             </td>
                         </tr>
                     @empty

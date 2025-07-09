@@ -17,10 +17,9 @@ class OrderController extends Controller
     public function transaction()
     {
         $customer = auth('customer')->user();
-        $orders = Order::with('items')->where('customer_id', $customer->id)->get();
+        $orders = Order::with('items')->where('customer_id', $customer->id)->orderBy('created_at', 'desc')->get();
 
         return view('pages.account.transaction', compact('orders'));
-
     }
 
     /**
@@ -105,9 +104,11 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function detail($code)
     {
-        //
+        $order = Order::with('items.product', 'items.variant', 'items.size')->where('code', $code)->firstOrFail();
+
+        return view('pages.account.transaction-detail', compact('order'));
     }
 
     /**

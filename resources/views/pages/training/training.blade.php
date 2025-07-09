@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="w-full max-w-7xl px-8 py-16">
+        <div class="w-full max-w-7xl px-8 py-16 mx-auto">
             <div class="w-full grid grid-cols-4 gap-4">
                 @forelse ($trainings as $training)
                     <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
@@ -55,8 +55,8 @@
                         </div>
                     </div>
                 @empty
-                    <div class="w-full col-span-4 flex justify-center h-[100px]">
-                        <p>Data training kosong</p>
+                    <div class="col-span-4 flex justify-center items-center h-[100px]">
+                        <h4 class="text-center">Data training kosong</h4>
                     </div>
                 @endforelse
             </div>

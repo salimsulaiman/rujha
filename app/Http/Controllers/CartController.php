@@ -39,6 +39,11 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
+        $customer = auth('customer')->user();
+
+        if ($customer->phone === null && $customer->address === null) {
+            return redirect()->route('setting')->with('notification', 'Harap isi Alamat dan No Telpon terlebih dahulu');
+        }
         $request->validate([
             'product_id'       => 'required|exists:products,id',
             'variant_id'       => 'required|exists:product_variants,id',
@@ -55,8 +60,6 @@ class CartController extends Controller
             'body_length'     => 'nullable|numeric|min:0',
             'sleeve_length'   => 'nullable|numeric|min:0',
         ]);
-
-        $customer = auth('customer')->user();
 
         $cart = Cart::firstOrCreate(
             ['customer_id' => $customer->id],

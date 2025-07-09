@@ -25,11 +25,13 @@ Route::get('/training/detail/{slug}', [TrainingController::class, 'detail'])->na
 
 Route::middleware('auth.customer')->group(function () {
     Route::get('/account/setting', [CustomerController::class, 'index'])->name('setting');
-    Route::get('/account/transaction', [OrderController::class, 'transaction'])->name('transaction');
     Route::post('/account/update-detail', [CustomerController::class, 'updateDetail'])->name('setting.update.detail');
     Route::post('/account/update-password', [CustomerController::class, 'updatePassword'])->name('setting.update.password');
     Route::post('/account/update-profile', [CustomerController::class, 'updateProfile'])->name('setting.update.profile');
     Route::post('/account/delete-profile', [CustomerController::class, 'deleteProfile'])->name('setting.delete.profile');
+
+    Route::get('/account/transaction', [OrderController::class, 'transaction'])->name('transaction');
+    Route::get('/account/transaction/{code}/detail', [OrderController::class, 'detail'])->name('transaction.detail');
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
