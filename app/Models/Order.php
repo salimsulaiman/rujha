@@ -8,6 +8,8 @@ class Order extends Model
 {
     protected $fillable = [
         'customer_id',
+        'address',
+        'phone',
         'code',
         'subtotal_amount',
         'tax',

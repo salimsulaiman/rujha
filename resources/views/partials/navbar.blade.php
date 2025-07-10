@@ -9,25 +9,25 @@
         <ul class="hidden md:flex gap-6 items-center">
             <li>
                 <a href="{{ route('home') }}"
-                    class="{{ request()->routeIs('home') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
+                    class="{{ request()->is('/') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
                     Home
                 </a>
             </li>
             <li>
                 <a href="{{ route('products') }}"
-                    class="{{ request()->routeIs('products') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
+                    class="{{ request()->is('*products*') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
                     Product
                 </a>
             </li>
             <li>
                 <a href="{{ route('training') }}"
-                    class="{{ request()->routeIs('training') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
+                    class="{{ request()->is('*training*') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
                     Training
                 </a>
             </li>
             <li>
                 <a href="/"
-                    class="{{ request()->routeIs('about') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
+                    class="{{ request()->is('*about*') ? 'font-bold border-b-2 border-slate-700 text-amber-900 pb-2' : 'text-slate-500 hover:text-slate-700' }}">
                     About
                 </a>
             </li>

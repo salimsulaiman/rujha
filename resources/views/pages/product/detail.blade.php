@@ -45,8 +45,6 @@
                 );
                 this.selectedSize = firstAvailable ? firstAvailable.id : '';
             },
-        
-            customSizeNote: '',
         }"
             x-init="updateActiveImageById(selectedVariantId);
             autoSelectSize();"
@@ -278,6 +276,11 @@
 
 
                     </div>
+                    @if (session('error'))
+                        <div class="p-4 mt-4 text-sm text-red-800 rounded-lg bg-red-50 font-medium" role="alert">
+                            <span class="font-semibold"></span> {{ session('error') }}
+                        </div>
+                    @endif
                     <div class="mt-8 flex gap-2 flex-col md:flex-row">
                         @auth('customer')
                             <form action="{{ route('cart.store') }}" method="POST" class="flex-1">
@@ -287,7 +290,11 @@
                                 <input type="hidden" name="size_id"
                                     :value="selectedSize === 'custom' ? '' : selectedSize">
                                 <input type="hidden" name="requested_meter"
-                                    :value="selectedVariant?.sizes.find(s => s.id === selectedSize)?.estimated_meter ?? 1">
+                                    :value="selectedSize !== 'custom'
+                                        ?
+                                        (selectedVariant?.sizes.find(s => s.id === selectedSize)?.estimated_meter ??
+                                            1) :
+                                        ''">
                                 <input type="hidden" name="quantity" :value="quantity">
                                 <input type="hidden" name="custom_size_note" :value="customSizeNote">
                                 <input type="hidden" name="chest" :value="customSize.chest">
@@ -296,7 +303,14 @@
                                 <input type="hidden" name="body_length" :value="customSize.body_length">
                                 <input type="hidden" name="sleeve_length" :value="customSize.sleeve_length">
                                 <button type="submit"
-                                    class="w-full bg-white text-slate-800 px-4 py-2 rounded-full hover:bg-slate-800 cursor-pointer hover:text-white border-slate-800 border">
+                                    :disabled="!selectedSize ||
+                                        (selectedSize !== 'custom' &&
+                                            (!selectedVariant?.sizes.find(s => s.id === selectedSize) ||
+                                                quantity * selectedVariant.sizes.find(s => s.id === selectedSize)
+                                                ?.estimated_meter > selectedVariant.stock_in_meter))"
+                                    class="w-full bg-white text-slate-800 px-4 py-2 rounded-full border border-slate-800
+                                    hover:bg-slate-800 hover:text-white
+                                    disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
                                     Add to cart
                                 </button>
                             </form>

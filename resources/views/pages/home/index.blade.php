@@ -7,14 +7,14 @@
                 <div class="absolute inset-0 bg-black/30 sm:bg-transparent z-0 rounded-b-4xl"></div>
                 <div class="relative z-10 flex flex-col gap-4 items-center">
                     <h1
-                        class="text-2xl sm:text-5xl text-white sm:text-slate-700 text-center max-w-4xl mx-auto leading-relaxed font-medium">
+                        class="text-2xl sm:text-5xl text-white sm:text-slate-700 text-center max-w-3xl mx-auto leading-relaxed font-medium">
                         Timeless <span class="text-amber-400 sm:text-amber-900 font-bold">Elegance</span>
-                        for Little Trendsetters Where
-                        <span class="text-amber-400 sm:text-amber-900 font-bold">Classic</span> Meets Cute!
+                        Perfectly Tailored for
+                        <span class="text-amber-400 sm:text-amber-900 font-bold">You</span>
                     </h1>
-                    <p class="text-sm sm:text-base text-white sm:text-slate-600 text-center max-w-2xl mx-auto">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur corrupti accusantium molestias
-                        sequi ducimus earum possimus voluptates commodi? Hic, beatae!
+                    <p class="text-sm sm:text-base text-white sm:text-slate-600 text-center max-w-xl mx-auto">
+                        Experience the art of custom tailoring — where every stitch reflects your style, and every piece is
+                        made to perfection
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <button
@@ -33,7 +33,7 @@
         <section class="w-full max-w-7xl px-8 py-8 mt-12 bg-white mx-auto">
             <div class="flex flex-col sm:flex-row sm:justify-between gap-4 sm:items-center">
                 <h2 class="font-medium text-2xl sm:text-3xl text-slate-700">
-                    Our popular product
+                    Our Popular Product
                 </h2>
                 <div class="flex gap-3">
                     <button
@@ -73,7 +73,8 @@
         </section>
         <section class="w-full max-w-7xl px-8 py-12 bg-white mx-auto">
             <div class="flex justify-between gap-4 items-center">
-                <h2 class="font-medium text-3xl text-slate-700">New arrival product</h2>
+                <h2 class="font-medium text-3xl text-slate-700">New Arrival Product</h2>
+                <a href="{{ route('products') }}" class="text-sm text-slate-400 hover:text-slate-700">Lihat Semua</a>
             </div>
             <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
                 @foreach ($newProducts as $product)
@@ -98,20 +99,15 @@
                     </div>
                 @endforeach
             </div>
-
         </section>
         <section class="w-full mt-8">
             <div class="w-full max-w-7xl px-10 py-10 bg-Whisper-50 mx-auto rounded-2xl">
                 <div class="flex flex-col gap-4 items-center">
                     <h2
                         class="font-medium text-2xl md:text-3xl text-slate-700 text-center max-w-xl leading-relaxed mx-auto">
-                        Find your
-                        dream outfit for
-                        your
-                        child from
-                        various categories</h2>
-                    <p class="max-w-lg text-center">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iste molestias
-                        voluptate corporis?</p>
+                        Explore Our Tailored Collections</h2>
+                    <p class="max-w-lg text-center">Find your ideal fit in every category, made with precision and purpose
+                    </p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full mt-12">
                     @foreach ($categories as $index => $category)
@@ -136,10 +132,10 @@
                     @endforeach
                 </div>
                 <div class="w-full flex items-center justify-center mt-8">
-                    <button
+                    <a href="{{ route('categories') }}"
                         class="rounded-full w-fit bg-white border border-slate-200 cursor-pointer focus:ring-1 focus:ring-slate-300 py-2 px-4 hover:bg-slate-50 mt-2">
                         View More
-                    </button>
+                    </a>
                 </div>
 
 

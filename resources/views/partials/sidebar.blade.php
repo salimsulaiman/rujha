@@ -52,11 +52,11 @@
                     <li>
                         <a href="{{ route('transaction') }}"
                             class="group flex gap-2 items-center rounded-lg px-4 py-2 transition-all
-                                {{ request()->is('account/transaction/*') || request()->is('transactions')
+                                {{ request()->is('*transaction*') || request()->is('transactions')
                                     ? 'bg-slate-700 text-white font-semibold'
                                     : 'text-gray-600 hover:bg-gray-100 hover:text-thunder-950' }}">
                             <i data-feather="credit-card"
-                                class="{{ request()->is('account/transaction/*') || request()->is('transactions')
+                                class="{{ request()->is('*transaction*') || request()->is('transactions')
                                     ? 'stroke-white'
                                     : 'stroke-gray-500 group-hover:stroke-thunder-950' }}">
                             </i>

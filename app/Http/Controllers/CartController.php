@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\ProductSize;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
@@ -41,24 +42,24 @@ class CartController extends Controller
     {
         $customer = auth('customer')->user();
 
-        if ($customer->phone === null && $customer->address === null) {
+        if (empty($customer->phone) || empty($customer->address)) {
             return redirect()->route('setting')->with('notification', 'Harap isi Alamat dan No Telpon terlebih dahulu');
         }
-        $request->validate([
+
+        $validated = $request->validate([
             'product_id'       => 'required|exists:products,id',
             'variant_id'       => 'required|exists:product_variants,id',
             'size_id'          => 'nullable|exists:product_sizes,id',
             'quantity'         => 'required|integer|min:1',
-            'requested_meter'  => 'nullable|numeric|min:0.01', // nullable karena akan dihitung jika custom
             'custom_size_note' => 'nullable|string',
             'notes'            => 'nullable|string',
 
-            // Validasi untuk input custom size (opsional, tergantung kebutuhan)
-            'chest'           => 'nullable|numeric|min:0',
-            'waist'           => 'nullable|numeric|min:0',
-            'hip'             => 'nullable|numeric|min:0',
-            'body_length'     => 'nullable|numeric|min:0',
-            'sleeve_length'   => 'nullable|numeric|min:0',
+            // Custom size values (optional)
+            'chest'            => 'nullable|numeric|min:0',
+            'waist'            => 'nullable|numeric|min:0',
+            'hip'              => 'nullable|numeric|min:0',
+            'body_length'      => 'nullable|numeric|min:0',
+            'sleeve_length'    => 'nullable|numeric|min:0',
         ]);
 
         $cart = Cart::firstOrCreate(
@@ -66,68 +67,70 @@ class CartController extends Controller
             ['created_at' => now()]
         );
 
-        $customSizeNote = $request->custom_size_note;
+        $variant = ProductVariant::findOrFail($validated['variant_id']);
+        $customSizeNote = $validated['custom_size_note'] ?? null;
         $customSizeHash = $customSizeNote ? hash('sha256', $customSizeNote) : null;
 
-        // ✅ Hitung requested_meter jika custom size
-        $requestedMeter = $request->requested_meter;
-        if (empty($request->size_id) && $customSizeNote) {
-            $chest        = floatval($request->chest);
-            $waist        = floatval($request->waist);
-            $hip          = floatval($request->hip);
-            $bodyLength   = floatval($request->body_length);
-            $sleeveLength = floatval($request->sleeve_length);
+        // Hitung requested meter
+        $requestedMeter = 1; // default fallback
 
-            // ✅ Logika perhitungan — kamu bisa sesuaikan
-            $requestedMeter = round(($bodyLength * 0.015) + (($chest + $hip + $sleeveLength) * 0.003), 2);
+        if (empty($validated['size_id']) && $customSizeNote) {
+            $chest        = floatval($validated['chest'] ?? 0);
+            $hip          = floatval($validated['hip'] ?? 0);
+            $bodyLength   = floatval($validated['body_length'] ?? 0);
+            $sleeveLength = floatval($validated['sleeve_length'] ?? 0);
 
-            // ✅ Tetapkan minimal meter
-            $requestedMeter = max($requestedMeter, 1); // minimal 1 meter
+            if ($chest && $hip && $bodyLength && $sleeveLength) {
+                $requestedMeter = round(($bodyLength * 0.015) + (($chest + $hip + $sleeveLength) * 0.003), 2);
+            } else {
+                return back()->with('error', 'Ukuran custom tidak lengkap. Mohon lengkapi semua ukuran.');
+            }
+        } elseif (!empty($validated['size_id'])) {
+            $size = ProductSize::findOrFail($validated['size_id']);
+            $requestedMeter = $size->estimated_meter ?? 1;
+        }
+
+        // Hitung total kebutuhan kain
+        $totalUsedMeter = $requestedMeter * $validated['quantity'];
+
+        if ($variant->stock_in_meter < $totalUsedMeter) {
+            return back()->with('error', 'Stok kain tidak mencukupi. Silakan kurangi jumlah atau pilih ukuran lain.');
         }
 
         // Cek apakah item sudah ada di keranjang
         $cartItem = CartItem::where('cart_id', $cart->id)
-            ->where('variant_id', $request->variant_id)
-            ->where('size_id', $request->size_id)
+            ->where('variant_id', $validated['variant_id'])
+            ->where('size_id', $validated['size_id'])
             ->where('custom_size_hash', $customSizeHash)
             ->first();
 
         if ($cartItem) {
-            $cartItem->increment('quantity', $request->quantity);
+            $cartItem->increment('quantity', $validated['quantity']);
             $cartItem->requested_meter += $requestedMeter;
-            $cartItem->notes = $request->notes;
+            $cartItem->notes = $validated['notes'] ?? null;
             $cartItem->custom_size_note = $customSizeNote;
             $cartItem->save();
         } else {
             $cart->items()->create([
-                'product_id'         => $request->product_id,
-                'variant_id'         => $request->variant_id,
-                'size_id'            => $request->size_id,
-                'quantity'           => $request->quantity,
+                'product_id'         => $validated['product_id'],
+                'variant_id'         => $validated['variant_id'],
+                'size_id'            => $validated['size_id'],
+                'quantity'           => $validated['quantity'],
                 'requested_meter'    => $requestedMeter,
                 'custom_size_note'   => $customSizeNote,
                 'custom_size_hash'   => $customSizeHash,
-                'notes'              => $request->notes,
+                'notes'              => $validated['notes'] ?? null,
             ]);
         }
 
-        $variant = ProductVariant::find($request->variant_id);
-        if ($variant) {
-            $totalUsedMeter = $requestedMeter * $request->quantity;
+        $variant->decrement('stock_in_meter', $totalUsedMeter);
 
-            // Cegah nilai negatif
-            if ($variant->stock_in_meter < $totalUsedMeter) {
-                return back()->with('error', 'Stok kain tidak mencukupi.');
-            }
-
-            $variant->decrement('stock_in_meter', $totalUsedMeter);
-        }
-
-        $product = Product::findOrFail($request->product_id);
-
-        return redirect()->route('product.detail', ['slug' => $product->slug])
-            ->with('success', 'Item baru ditambahkan. Silahkan cek keranjang anda.');
+        return redirect()
+            ->route('product.detail', ['slug' => $variant->product->slug])
+            ->with('success', 'Item berhasil ditambahkan ke keranjang.');
     }
+
+
 
 
     /**

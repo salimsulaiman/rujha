@@ -48,10 +48,10 @@
                     <h5 class="uppercase text-slate-500 font-semibold text-xs">Contact</h5>
                     <div class="flex flex-col gap-1">
                         <h4 class="text-slate-700 text-sm font-semibold">
-                            {{ $order->customer->address }}
+                            {{ $order->address }}
                         </h4>
                         <h4 class="text-slate-700 text-sm font-semibold">
-                            {{ $order->customer->phone }}
+                            {{ $order->phone }}
                         </h4>
                     </div>
                 </div>

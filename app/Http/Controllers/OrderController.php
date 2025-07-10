@@ -41,6 +41,11 @@ class OrderController extends Controller
     public function placeOrder(Request $request)
     {
         $customer = auth('customer')->user();
+
+        if ($customer->phone === null && $customer->address === null) {
+            return redirect()->route('setting')->with('notification', 'Harap isi Alamat dan No Telpon terlebih dahulu');
+        }
+
         $request->validate([
             'subtotal_amount' => 'required|numeric|min:0',
             'tax' => 'required|numeric|min:0',
@@ -61,6 +66,8 @@ class OrderController extends Controller
         try {
             $order = Order::create([
                 'customer_id' => $customer->id,
+                'address' => $customer->address,
+                'phone' => $customer->phone,
                 'code' => 'ORD-' . strtoupper(uniqid()),
                 'subtotal_amount' => $request->subtotal_amount,
                 'tax' => $request->tax,

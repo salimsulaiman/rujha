@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
@@ -20,6 +21,8 @@ Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/detail/{slug}', [ProductController::class, 'show'])->name('product.detail');
+Route::get('/products/categories', [CategoryController::class, 'index'])->name('categories');
+Route::get('/products/categories/{slug}', [CategoryController::class, 'show'])->name('categories.detail');
 Route::get('/training', [TrainingController::class, 'index'])->name('training');
 Route::get('/training/detail/{slug}', [TrainingController::class, 'detail'])->name('training.detail');
 
